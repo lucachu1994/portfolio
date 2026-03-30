@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luca Raimondo — AI Creative & Sound</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #07070e;
+      --card:      #0f0f1a;
+      --card2:     #13131f;
+      --border:    rgba(255,255,255,0.07);
+      --accent:    #7c6af7;
+      --accent2:   #e85d9b;
+      --text:      #e8e8f0;
+      --muted:     #6b6b80;
+      --tag-bg:    rgba(124,106,247,0.12);
+      --tag-color: #a89ff8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─── STARFIELD ─── */
+    #stars {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none; overflow: hidden;
+    }
+    #stars canvas { width: 100%; height: 100%; display: block; }
+
+    /* everything above stars */
+    nav, #hero, section, footer, hr.divider { position: relative; z-index: 1; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(7,7,14,0.80);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px;
+    }
+    .nav-astronaut { font-size: 20px; line-height: 1; }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: center; gap: 48px;
+      max-width: 1100px; margin: 0 auto;
+      padding: 140px 48px 80px;
+    }
+
+    .hero-left { max-width: 640px; }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); font-weight: 500; margin-bottom: 24px;
+    }
+    .hero-eyebrow span { display: inline-block; width: 20px; height: 1px; background: var(--accent); }
+
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(46px, 6.5vw, 80px);
+      font-weight: 700; line-height: 1.05;
+      letter-spacing: -0.025em; margin-bottom: 24px;
+    }
+    h1 em { font-style: normal; color: var(--accent); }
+
+    .hero-sub {
+      font-size: 19px; color: var(--muted); max-width: 580px;
+      line-height: 1.65; margin-bottom: 44px; font-weight: 400;
+    }
+    .hero-sub strong { color: var(--text); font-weight: 500; }
+
+    .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 44px; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent); color: #fff;
+      padding: 13px 26px; border-radius: 8px;
+      font-size: 14px; font-weight: 600; text-decoration: none;
+      transition: opacity .2s, transform .2s;
+    }
+    .btn-primary:hover { opacity: .85; transform: translateY(-2px); }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid var(--border); color: var(--text);
+      padding: 13px 26px; border-radius: 8px;
+      font-size: 14px; font-weight: 500; text-decoration: none;
+      transition: border-color .2s, transform .2s;
+    }
+    .btn-outline:hover { border-color: rgba(255,255,255,0.22); transform: translateY(-2px); }
+
+    .btn-sm {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 500;
+      text-decoration: none; transition: opacity .2s, transform .2s;
+    }
+    .btn-sm:hover { opacity: .8; transform: translateY(-1px); }
+    .btn-sm.filled { background: var(--accent); color: #fff; }
+    .btn-sm.ghost { border: 1px solid var(--border); color: var(--muted); }
+    .btn-sm.ghost:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+    .hero-badges { display: flex; flex-wrap: wrap; gap: 10px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid var(--border); background: rgba(255,255,255,0.03);
+      padding: 9px 16px; border-radius: 7px;
+      font-size: 12px; color: var(--muted);
+    }
+    .hero-badge .dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; flex-shrink: 0; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.35} }
+
+    /* ── ASTRONAUT VISUAL ── */
+    .hero-right {
+      display: flex; flex-direction: column; align-items: center;
+      user-select: none;
+    }
+    .astro-ring {
+      position: relative;
+      width: 260px; height: 260px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .astro-ring::before {
+      content: '';
+      position: absolute; inset: 0; border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, rgba(124,106,247,0.18), transparent 65%);
+      animation: glow-pulse 4s ease-in-out infinite;
+    }
+    .astro-ring::after {
+      content: '';
+      position: absolute; inset: -8px; border-radius: 50%;
+      border: 1px solid rgba(124,106,247,0.18);
+      animation: spin-slow 20s linear infinite;
+      border-top-color: rgba(124,106,247,0.5);
+    }
+    @keyframes glow-pulse { 0%,100%{opacity:.6}50%{opacity:1} }
+    @keyframes spin-slow  { to { transform: rotate(360deg); } }
+
+    .astro-emoji {
+      width: 170px; height: 170px;
+      border-radius: 50%; object-fit: cover;
+      animation: float 6s ease-in-out infinite;
+      filter: drop-shadow(0 0 32px rgba(124,106,247,0.45));
+      display: block;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-14px); }
+    }
+
+    .astro-orbit {
+      position: absolute;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--accent2); opacity: .7;
+      animation: orbit 8s linear infinite;
+      top: 50%; left: 50%;
+      transform-origin: 0 0;
+    }
+    .astro-orbit.o2 { animation-duration: 12s; animation-direction: reverse; background: #4ade80; opacity: .5; width: 7px; height: 7px; }
+    .astro-orbit.o3 { animation-duration: 16s; background: #60a5fa; opacity: .4; width: 6px; height: 6px; }
+    @keyframes orbit {
+      from { transform: rotate(0deg)   translateX(120px) rotate(0deg); }
+      to   { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
+    }
+
+    /* ── SECTIONS ── */
+    section { max-width: 1100px; margin: 0 auto; padding: 96px 48px; }
+    hr.divider { border: none; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+
+    .section-label {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--muted); font-weight: 500; margin-bottom: 14px;
+    }
+    h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(26px, 3.5vw, 38px); font-weight: 700;
+      letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 44px;
+    }
+    h2 em { font-style: normal; color: var(--accent); }
+
+    /* ── PITCH CARDS ── */
+    .pitch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 700px) { .pitch-grid { grid-template-columns: 1fr; } }
+
+    .pitch-card {
+      border-radius: 16px; padding: 32px;
+      background: var(--card); border: 1px solid var(--border);
+    }
+    .pitch-card.hl { border-color: rgba(124,106,247,0.35); background: linear-gradient(145deg, #0f0f1e, #0d0d1a); }
+
+    .pitch-card .co-label {
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); font-weight: 600; margin-bottom: 10px;
+    }
+    .pitch-card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px; font-weight: 700; margin-bottom: 12px; line-height: 1.2;
+    }
+    .pitch-card > p { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 18px; }
+    .pp { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
+    .pp-dot { width: 5px; height: 5px; background: var(--accent); border-radius: 50%; margin-top: 9px; flex-shrink: 0; }
+    .pp p  { font-size: 13.5px; color: var(--muted); margin-bottom: 0; line-height: 1.55; }
+    .pp p strong { color: var(--text); font-weight: 500; }
+
+    /* ── PROJECTS ── */
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 20px; }
+
+    .pcard {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+      transition: border-color .25s, transform .25s;
+      text-decoration: none; color: inherit; display: block;
+    }
+    .pcard:hover { border-color: rgba(124,106,247,0.32); transform: translateY(-4px); }
+
+    /* Tink — secondary style */
+    .pcard.secondary { opacity: .78; }
+    .pcard.secondary:hover { opacity: 1; }
+
+    .pcard-thumb {
+      position: relative; aspect-ratio: 16/9;
+      overflow: hidden; background: #0a0a12;
+    }
+    .pcard-thumb img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .4s; display: block;
+    }
+    .pcard:hover .pcard-thumb img { transform: scale(1.04); }
+
+    .play-icon {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.32); opacity: 0; transition: opacity .25s;
+    }
+    .pcard:hover .play-icon { opacity: 1; }
+    .play-icon svg { width: 48px; height: 48px; filter: drop-shadow(0 2px 8px rgba(0,0,0,.6)); }
+
+    .pcard-body { padding: 22px; }
+    .ptags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .tag {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.04em;
+      padding: 3px 9px; border-radius: 4px;
+      background: var(--tag-bg); color: var(--tag-color);
+    }
+    .tag.snd { background: rgba(232,93,155,0.1); color: #e85d9b; }
+    .tag.grn { background: rgba(74,222,128,0.08); color: #4ade80; }
+    .tag.dim { background: rgba(255,255,255,0.04); color: var(--muted); }
+
+    .ptitle {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px; font-weight: 700; margin-bottom: 8px;
+    }
+    .pdesc { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
+    .proles { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+    .role-pill {
+      font-size: 11px; color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border);
+    }
+    .pcard-links { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* Concept card (no thumb) */
+    .ccard {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 28px;
+      transition: border-color .25s, transform .25s;
+    }
+    .ccard:hover { border-color: rgba(124,106,247,0.25); transform: translateY(-3px); }
+    .ccard-icon { font-size: 28px; margin-bottom: 14px; }
+
+    /* ── SKILLS ── */
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+    .skill-block {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px;
+    }
+    .skill-block h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px; font-weight: 600; margin-bottom: 14px;
+    }
+    .skill-list { display: flex; flex-wrap: wrap; gap: 7px; }
+    .skill-pill {
+      font-size: 12px; padding: 5px 11px; border-radius: 5px;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    /* ── BACKGROUND ── */
+    .bg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 640px) { .bg-grid { grid-template-columns: 1fr; } }
+
+    .bg-item {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px;
+    }
+    .bg-year {
+      font-size: 11px; color: var(--muted); letter-spacing: 0.06em;
+      text-transform: uppercase; margin-bottom: 5px; font-weight: 500;
+    }
+    .bg-item h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px; font-weight: 700; margin-bottom: 6px;
+    }
+    .bg-item p { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+    .badge-grn {
+      display: inline-block; margin-top: 9px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+      padding: 3px 9px; border-radius: 4px;
+      background: rgba(74,222,128,0.1); color: #4ade80;
+    }
+    .badge-acc {
+      display: inline-block; margin-top: 9px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+      padding: 3px 9px; border-radius: 4px;
+      background: var(--tag-bg); color: var(--tag-color);
+    }
+
+    /* ── CONTACT ── */
+    #contact { text-align: center; }
+    #contact h2 { margin-bottom: 14px; }
+    #contact > p { color: var(--muted); font-size: 17px; margin-bottom: 36px; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .contact-links { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border); text-align: center;
+      padding: 28px 48px; font-size: 12px; color: var(--muted);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      #hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+    }
+    @media (max-width: 768px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      section, #hero { padding: 72px 20px; }
+      .projects-grid, .skills-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- STARFIELD -->
+<div id="stars"><canvas id="starCanvas"></canvas></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <span class="nav-astronaut">🧑‍🚀</span>
+    Luca Raimondo
+  </div>
+  <div class="nav-links">
+    <a href="#projects">Work</a>
+    <a href="#skills">Skills</a>
+    <a href="#background">Background</a>
+    <a href="#contact">Contact</a>
+    <a href="resume.html" style="color:var(--tag-color);font-weight:500;">Resume →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div id="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow"><span></span> AI Creative · Sound Director · Researcher</div>
+    <h1>Exploring the<br><em>creative</em><br>frontier.</h1>
+    <p class="hero-sub">
+      I make <strong>AI-generated films and generative audio systems,</strong> research how artificial intelligence reshapes creative practice, and help organizations navigate digital transformation — from the production floor to academic theory.
+    </p>
+    <div class="hero-ctas">
+      <a href="#projects" class="btn-primary">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 3l14 9-14 9V3z"/></svg>
+        See the Work
+      </a>
+      <a href="#contact" class="btn-outline">Get in Touch</a>
+    </div>
+    <div class="hero-badges">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Ventana Sur Tech 2025 — Official Selection
+      </div>
+      <div class="hero-badge">📍 Montevideo, Uruguay</div>
+      <div class="hero-badge">🎓 PhD Candidate · AI Research</div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="astro-ring">
+      <img src="Luca astronauta.jpeg" alt="Luca Raimondo" class="astro-emoji" />
+      <div class="astro-orbit o1"></div>
+      <div class="astro-orbit o2"></div>
+      <div class="astro-orbit o3"></div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- WHAT I DO -->
+<section id="pitch">
+  <div class="section-label">What I do</div>
+  <h2>Two crafts.<br><em>One perspective.</em></h2>
+
+  <div class="pitch-grid">
+    <div class="pitch-card hl">
+      <div class="co-label">Sound & Audio Production</div>
+      <h3>Audio is my<br>native language.</h3>
+      <p>I understand sound as a craft — not just as a tool. From professional film sets to generative music systems, my work is shaped by trained ears and a production mindset built over years.</p>
+      <div class="pp"><div class="pp-dot"></div><p><strong>Sound Director & Boom Operator</strong> on Amazon Prime international series and Uruguayan features.</p></div>
+      <div class="pp"><div class="pp-dot"></div><p><strong>Formal music training</strong> at ESMUC Barcelona — composition for film, television, and interactive media.</p></div>
+      <div class="pp"><div class="pp-dot"></div><p><strong>Generative audio systems</strong> — from modular live installations to real-time AI broadcast pipelines.</p></div>
+      <div class="pp"><div class="pp-dot"></div><p><strong>Native Spanish speaker</strong>, working fluently across Spanish and English-language productions.</p></div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="co-label">AI Creative Production</div>
+      <h3>I don't just prompt.<br>I produce.</h3>
+      <p>My AI work goes beyond experimentation — I build complete productions using end-to-end generative pipelines, and research the technology that makes them possible.</p>
+      <div class="pp"><div class="pp-dot"></div><p><strong>Full pipeline ownership:</strong> script → image gen → video gen → sound design → music → final cut.</p></div>
+      <div class="pp"><div class="pp-dot"></div><p><strong>ComfyUI practitioner</strong> building custom AI workflows in a professional studio context daily.</p></div>
+      <div class="pp"><div class="pp-dot"></div><p><strong>Generative systems thinker</strong> — from liquid media to real-time audio streams, I build things that run themselves.</p></div>
+      <div class="pp"><div class="pp-dot"></div><p><strong>AI researcher</strong> (PhD, Wilson Center) — I understand the technology, not just the output.</p></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label">Selected Work</div>
+  <h2>Productions &<br><em>creative systems</em></h2>
+
+  <div class="projects-grid">
+
+    <!-- WETLAND PROJECT — promoted to first -->
+    <div class="pcard" style="cursor:default;">
+      <div class="pcard-thumb">
+        <a href="https://youtu.be/mjgk35H6EVc" target="_blank" rel="noopener" style="display:block;height:100%;">
+          <img src="https://img.youtube.com/vi/mjgk35H6EVc/maxresdefault.jpg" alt="The Wetland Project demo" loading="lazy" />
+          <div class="play-icon">
+            <svg viewBox="0 0 80 80" fill="none">
+              <circle cx="40" cy="40" r="38" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+              <path d="M32 27l22 13-22 13V27z" fill="white"/>
+            </svg>
+          </div>
+        </a>
+      </div>
+      <div class="pcard-body">
+        <div class="ptags">
+          <span class="tag snd">Generative Audio</span>
+          <span class="tag">Live System</span>
+          <span class="tag">Concept & Tech</span>
+        </div>
+        <div class="ptitle">The Wetland Project</div>
+        <p class="pdesc">An immersive acoustic experience built on generative and modular music. A real-time system where the soundscape evolves procedurally — a living, breathing audio environment with no two plays alike.</p>
+        <div class="proles">
+          <span class="role-pill">Generative Music System</span>
+          <span class="role-pill">Modular Audio</span>
+          <span class="role-pill">Sound Design</span>
+          <span class="role-pill">Concept & Direction</span>
+        </div>
+        <div class="pcard-links">
+          <a href="https://youtu.be/mjgk35H6EVc" target="_blank" rel="noopener" class="btn-sm filled">▶ Watch Demo</a>
+          <a href="https://lucachu1994.github.io/the-wetland-project/#" target="_blank" rel="noopener" class="btn-sm ghost">🌿 Visit Project</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- LUCY'S STRANGE ENCOUNTER -->
+    <a href="https://www.youtube.com/watch?v=UDRz2AOeAUw" target="_blank" rel="noopener" class="pcard">
+      <div class="pcard-thumb">
+        <img src="https://img.youtube.com/vi/UDRz2AOeAUw/maxresdefault.jpg" alt="Lucy's Strange Encounter" loading="lazy" />
+        <div class="play-icon">
+          <svg viewBox="0 0 80 80" fill="none">
+            <circle cx="40" cy="40" r="38" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+            <path d="M32 27l22 13-22 13V27z" fill="white"/>
+          </svg>
+        </div>
+      </div>
+      <div class="pcard-body">
+        <div class="ptags">
+          <span class="tag">Short Film</span>
+          <span class="tag snd">Sound Design</span>
+          <span class="tag">Gen AI</span>
+        </div>
+        <div class="ptitle">Lucy's Strange Encounter</div>
+        <p class="pdesc">AI-generated narrative short. End-to-end generative pipeline covering imagery, motion, voices, and a fully custom sound landscape built from scratch.</p>
+        <div class="proles">
+          <span class="role-pill">Image Generation</span>
+          <span class="role-pill">Video Generation</span>
+          <span class="role-pill">Voice AI</span>
+          <span class="role-pill">Sound Design</span>
+          <span class="role-pill">Original Music</span>
+          <span class="role-pill">Editing</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- SOUTS REEL -->
+    <a href="https://youtu.be/Kiz3IQCpFUw" target="_blank" rel="noopener" class="pcard">
+      <div class="pcard-thumb">
+        <img src="https://img.youtube.com/vi/Kiz3IQCpFUw/maxresdefault.jpg" alt="SideOutSticks Studio Reel" loading="lazy" />
+        <div class="play-icon">
+          <svg viewBox="0 0 80 80" fill="none">
+            <circle cx="40" cy="40" r="38" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+            <path d="M32 27l22 13-22 13V27z" fill="white"/>
+          </svg>
+        </div>
+      </div>
+      <div class="pcard-body">
+        <div class="ptags">
+          <span class="tag">Studio Reel</span>
+          <span class="tag snd">Audio Production</span>
+          <span class="tag">Gen AI</span>
+        </div>
+        <div class="ptitle">SideOutSticks Studio Reel</div>
+        <p class="pdesc">Official reel of SideOutSticks (formerly Vapai Studio) — an AI creative studio exploring the frontiers of generative media production.</p>
+        <div class="proles">
+          <span class="role-pill">Editing</span>
+          <span class="role-pill">Sound Generation</span>
+          <span class="role-pill">Sound Design</span>
+          <span class="role-pill">Music Generation</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- GENERATIVE RADIO -->
+    <div class="ccard">
+      <div class="ccard-icon">📡</div>
+      <div class="ptags">
+        <span class="tag snd">Live Audio AI</span>
+        <span class="tag">Real-Time System</span>
+      </div>
+      <div class="ptitle">Infinite Generative Radio</div>
+      <p class="pdesc" style="margin-bottom:0;">A radio station with no archive. Music, atmosphere, and voice synthesized and streamed in real time — a 24/7 AI broadcast that has never played the same content twice.</p>
+    </div>
+
+    <!-- LIQUID CONTENT -->
+    <a href="https://www.vapai.studio/liquid" target="_blank" rel="noopener" class="pcard">
+      <div class="pcard-thumb" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#12122a,#1a1232,#0d1a2e);">
+        <div style="text-align:center;">
+          <div style="font-size:44px;margin-bottom:8px;opacity:.85;">◈</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:0.12em;text-transform:uppercase;">Interactive Experience</div>
+        </div>
+      </div>
+      <div class="pcard-body">
+        <div class="ptags">
+          <span class="tag">Liquid Media</span>
+          <span class="tag">AI System</span>
+        </div>
+        <div class="ptitle">Liquid Content</div>
+        <p class="pdesc">Content that adapts to the moment it's played. A system that varies based on reproduction context — media that is genuinely different every time it's experienced.</p>
+        <div class="proles">
+          <span class="role-pill">Concept Direction</span>
+          <span class="role-pill">AI Content System</span>
+          <span class="role-pill">Interactive Design</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- TINK — demoted, recognition kept as text -->
+    <a href="https://youtu.be/zIyYpQvzcgg" target="_blank" rel="noopener" class="pcard secondary">
+      <div class="pcard-thumb">
+        <img src="https://img.youtube.com/vi/zIyYpQvzcgg/maxresdefault.jpg" alt="Tink short film" loading="lazy" />
+        <div class="play-icon">
+          <svg viewBox="0 0 80 80" fill="none">
+            <circle cx="40" cy="40" r="38" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+            <path d="M32 27l22 13-22 13V27z" fill="white"/>
+          </svg>
+        </div>
+      </div>
+      <div class="pcard-body">
+        <div class="ptags">
+          <span class="tag">Short Film</span>
+          <span class="tag snd">Sound Design</span>
+          <span class="tag grn">Ventana Sur Tech 2025</span>
+        </div>
+        <div class="ptitle">Tink</div>
+        <p class="pdesc">Fully AI-generated short. Selected for <strong>Ventana Sur Tech 2025</strong> — the Cannes-affiliated Latin American film market for tech-driven cinema.</p>
+        <div class="proles">
+          <span class="role-pill">Screenplay</span>
+          <span class="role-pill">Image Gen</span>
+          <span class="role-pill">Video Gen</span>
+          <span class="role-pill">Voice AI</span>
+          <span class="role-pill">Sound Design</span>
+          <span class="role-pill">Music</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">Capabilities</div>
+  <h2>What I bring<br>to the <em>table</em></h2>
+
+  <div class="skills-grid">
+    <div class="skill-block">
+      <h3>🎛 Audio & Sound</h3>
+      <div class="skill-list">
+        <span class="skill-pill">Sound Design</span>
+        <span class="skill-pill">Music Composition</span>
+        <span class="skill-pill">Audio Direction</span>
+        <span class="skill-pill">Voice AI</span>
+        <span class="skill-pill">Generative Music</span>
+        <span class="skill-pill">Production Management</span>
+        <span class="skill-pill">On-set Sound</span>
+      </div>
+    </div>
+    <div class="skill-block">
+      <h3>🤖 AI & Generative</h3>
+      <div class="skill-list">
+        <span class="skill-pill">ComfyUI</span>
+        <span class="skill-pill">Prompt Engineering</span>
+        <span class="skill-pill">Image Generation</span>
+        <span class="skill-pill">Video Generation</span>
+        <span class="skill-pill">Local AI Models</span>
+        <span class="skill-pill">ElevenLabs</span>
+        <span class="skill-pill">Workflow Design</span>
+      </div>
+    </div>
+    <div class="skill-block">
+      <h3>🎬 Film & Production</h3>
+      <div class="skill-list">
+        <span class="skill-pill">Screenplay Writing</span>
+        <span class="skill-pill">Video Editing</span>
+        <span class="skill-pill">Concept Development</span>
+        <span class="skill-pill">Post-production</span>
+        <span class="skill-pill">AI Film Direction</span>
+      </div>
+    </div>
+    <div class="skill-block">
+      <h3>📡 Research & Consulting</h3>
+      <div class="skill-list">
+        <span class="skill-pill">AI Research (PhD)</span>
+        <span class="skill-pill">Digital Transformation</span>
+        <span class="skill-pill">Content Strategy</span>
+        <span class="skill-pill">Brand Communication</span>
+        <span class="skill-pill">Spanish (Native)</span>
+        <span class="skill-pill">English (B2+)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- BACKGROUND -->
+<section id="background">
+  <div class="section-label">Background</div>
+  <h2>Credentials that<br><em>matter</em></h2>
+
+  <div class="bg-grid">
+    <div class="bg-item">
+      <div class="bg-year">2024 – Present</div>
+      <h3>PhD in Communication</h3>
+      <p>Catholic University of Uruguay. Researching uses and perceptions of AI among young people — academic frameworks built around the same technology I use daily in production.</p>
+      <span class="badge-grn">Active Research</span>
+    </div>
+
+    <div class="bg-item">
+      <div class="bg-year">2026 – Present</div>
+      <h3>Digital Transformation Consultant</h3>
+      <p>Advising Green Lab Packing (logistics) on AI implementation and digital transformation strategy — research-based insight applied to real-world business operations.</p>
+      <span class="badge-acc">Current Role</span>
+    </div>
+
+    <div class="bg-item">
+      <div class="bg-year">Film Industry</div>
+      <h3>Sound Director & Boom Operator</h3>
+      <p>Sound Director on a Uruguayan feature film. Boom operator on two international <strong>Amazon Prime</strong> series and a Uruguayan feature — broadcast-quality audio on professional sets.</p>
+      <span class="badge-grn">Amazon Prime Series</span>
+    </div>
+
+    <div class="bg-item">
+      <div class="bg-year">ESMUC, Barcelona</div>
+      <h3>Master — Music for Audiovisual Media</h3>
+      <p>Escola Superior de Música de Catalunya. Formal training in composing and designing sound for film, television, and interactive media. A compositional ear applied to AI audio production.</p>
+    </div>
+
+    <div class="bg-item">
+      <div class="bg-year">2024 – 2025</div>
+      <h3>Research Assistant — Wilson Center</h3>
+      <p>Identified opportunities and challenges of AI implementation across Latin American industrial sectors. Policy-level research with international reach.</p>
+    </div>
+
+    <div class="bg-item">
+      <div class="bg-year">2024 – 2025</div>
+      <h3>Research Assistant — Open Technology Fund</h3>
+      <p>Examined DNS blocking in Latin America, focusing on human rights and policy implications. Produced measurement tools and regional trend analyses.</p>
+    </div>
+
+    <div class="bg-item">
+      <div class="bg-year">2025 – Present</div>
+      <h3>University Lecturer</h3>
+      <p>Digital Platform Analysis at Universidad Católica del Uruguay — translating AI research into applied curriculum for the next generation of communicators.</p>
+    </div>
+
+    <div class="bg-item">
+      <div class="bg-year">2023 – 2024</div>
+      <h3>Head of Marketing — CodigoDelSur</h3>
+      <p>Strategic communication and brand positioning for the US market — social media, email marketing, content production, and institutional events.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">Let's talk</div>
+  <h2>Let's build<br>something <em>together.</em></h2>
+  <p>Based in Montevideo, Uruguay. Always open to interesting collaborations.</p>
+  <div class="contact-links">
+    <a href="mailto:luca1994@gmail.com" class="btn-primary">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16v16H4V4zm0 0l8 8 8-8"/></svg>
+      luca1994@gmail.com
+    </a>
+    <a href="https://www.linkedin.com/in/luca-raimondolo/" target="_blank" rel="noopener" class="btn-outline">LinkedIn</a>
+    <a href="https://www.youtube.com/@lucaraimondo5" target="_blank" rel="noopener" class="btn-outline">YouTube</a>
+  </div>
+</section>
+
+<footer>🧑‍🚀 &nbsp;© 2026 Luca Raimondo &nbsp;·&nbsp; Montevideo, Uruguay</footer>
+
+<!-- STARFIELD SCRIPT -->
+<script>
+(function() {
+  const canvas = document.getElementById('starCanvas');
+  const ctx    = canvas.getContext('2d');
+  let stars    = [];
+  const COUNT  = 180;
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function initStars() {
+    stars = [];
+    for (let i = 0; i < COUNT; i++) {
+      stars.push({
+        x:     Math.random() * canvas.width,
+        y:     Math.random() * canvas.height,
+        r:     Math.random() * 1.2 + 0.2,
+        alpha: Math.random() * 0.6 + 0.15,
+        speed: Math.random() * 0.015 + 0.005,
+        phase: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    frame += 0.008;
+    stars.forEach(s => {
+      const a = s.alpha * (0.6 + 0.4 * Math.sin(frame * s.speed * 60 + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200, 195, 255, ${a})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  initStars();
+  draw();
+  window.addEventListener('resize', () => { resize(); initStars(); });
+})();
+</script>
+
+</body>
+</html>

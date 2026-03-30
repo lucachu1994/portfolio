@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luca Raimondo — Resume</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── SCREEN PREVIEW (matches print) ── */
+    :root {
+      --accent:    #5b4de0;
+      --accent-lt: rgba(91,77,224,0.08);
+      --accent-br: rgba(91,77,224,0.2);
+      --text:      #111118;
+      --muted:     #52525f;
+      --rule:      #e0e0ea;
+      --green:     #1a8a4a;
+      --green-lt:  rgba(26,138,74,0.08);
+    }
+
+    html { background: #d4d4d8; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 8.8pt;
+      line-height: 1.55;
+      color: var(--text);
+      background: #fff;
+      -webkit-font-smoothing: antialiased;
+
+      /* A4 card on screen */
+      width: 210mm;
+      min-height: 297mm;
+      margin: 16mm auto;
+      padding: 14mm 13mm 14mm 13mm;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      html { background: #fff; }
+      body {
+        margin: 0; padding: 13mm 12mm 13mm 12mm;
+        box-shadow: none;
+        width: 100%; min-height: 0;
+      }
+      .no-print { display: none !important; }
+      @page { size: A4; margin: 0; }
+    }
+
+    /* ── PRINT BUTTON (screen only) ── */
+    .print-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 99;
+      background: #1a1a2e; border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 24px; font-family: 'Inter', sans-serif;
+    }
+    .print-bar span { font-size: 12px; color: rgba(255,255,255,0.45); }
+    .print-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--accent); color: #fff;
+      border: none; padding: 8px 20px; border-radius: 6px;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      font-family: 'Inter', sans-serif; transition: opacity .15s;
+    }
+    .print-btn:hover { opacity: .85; }
+
+    /* ── LAYOUT: two columns ── */
+    .page {
+      display: grid;
+      grid-template-columns: 52mm 1fr;
+      gap: 9mm;
+      align-items: start;
+    }
+
+    /* ════════════════════════════
+       LEFT COLUMN
+    ════════════════════════════ */
+    .col-left { display: flex; flex-direction: column; gap: 7mm; }
+
+    /* Photo */
+    .photo-wrap { text-align: center; }
+    .photo-wrap img {
+      width: 44mm; height: 44mm;
+      border-radius: 50%; object-fit: cover;
+      border: 2px solid var(--accent-br);
+    }
+
+    /* QR */
+    .qr-wrap { text-align: center; }
+    .qr-wrap img {
+      width: 36mm; height: 36mm; border-radius: 4px;
+      border: 1px solid var(--rule);
+    }
+    .qr-label {
+      font-size: 7pt; color: var(--muted); margin-top: 3px; line-height: 1.4;
+      font-weight: 500;
+    }
+    .qr-label strong { display: block; color: var(--accent); font-size: 7.5pt; }
+
+    /* Left sections */
+    .l-section { display: flex; flex-direction: column; gap: 3mm; }
+    .l-label {
+      font-size: 6.5pt; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); font-weight: 700;
+      padding-bottom: 2mm; border-bottom: 1px solid var(--rule);
+    }
+
+    /* Contact */
+    .contact-list { display: flex; flex-direction: column; gap: 2mm; }
+    .contact-item { display: flex; align-items: flex-start; gap: 4px; font-size: 8pt; color: var(--muted); }
+    .contact-item a { color: var(--muted); text-decoration: none; }
+    .ci-icon { flex-shrink: 0; width: 10px; text-align: center; margin-top: 1px; }
+
+    /* Languages */
+    .lang-list { display: flex; flex-direction: column; gap: 2mm; }
+    .lang-item { display: flex; justify-content: space-between; }
+    .lang-name { font-size: 8pt; font-weight: 600; }
+    .lang-level { font-size: 7.5pt; color: var(--muted); }
+
+    /* PhD highlight */
+    .phd-card {
+      background: var(--accent-lt);
+      border: 1px solid var(--accent-br);
+      border-radius: 4px; padding: 3mm 3.5mm;
+    }
+    .phd-card-eyebrow {
+      font-size: 6.5pt; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); font-weight: 700; margin-bottom: 1.5mm;
+    }
+    .phd-card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 8.5pt; font-weight: 700; margin-bottom: 1mm;
+    }
+    .phd-card p { font-size: 7.5pt; color: var(--muted); line-height: 1.45; }
+    .phd-badge {
+      display: inline-block; margin-top: 2mm;
+      font-size: 6.5pt; font-weight: 700; letter-spacing: 0.05em;
+      padding: 1.5px 6px; border-radius: 3px;
+      background: var(--green-lt); color: var(--green);
+    }
+
+    /* Skills */
+    .skill-group { display: flex; flex-direction: column; gap: 1.5mm; }
+    .skill-pills { display: flex; flex-wrap: wrap; gap: 1.5mm; }
+    .s-pill {
+      font-size: 7pt; padding: 1.5px 6px; border-radius: 3px;
+      border: 1px solid var(--rule); color: var(--muted);
+      background: rgba(0,0,0,0.02);
+    }
+
+    /* ════════════════════════════
+       RIGHT COLUMN
+    ════════════════════════════ */
+    .col-right { display: flex; flex-direction: column; gap: 5.5mm; }
+
+    /* Name block */
+    .name-block {
+      padding-bottom: 4mm;
+      border-bottom: 2px solid var(--rule);
+    }
+    .name-block h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22pt; font-weight: 700;
+      letter-spacing: -0.02em; line-height: 1.05;
+      margin-bottom: 1.5mm;
+    }
+    .name-block h1 span { color: var(--accent); }
+    .name-block .subtitle {
+      font-size: 9.5pt; color: var(--muted); font-weight: 400;
+      margin-bottom: 3mm;
+    }
+    .name-tags { display: flex; flex-wrap: wrap; gap: 2mm; }
+    .n-tag {
+      font-size: 7pt; font-weight: 600; padding: 2px 8px; border-radius: 3px;
+      background: var(--accent-lt); color: var(--accent); border: 1px solid var(--accent-br);
+    }
+    .n-tag.grn {
+      background: var(--green-lt); color: var(--green);
+      border-color: rgba(26,138,74,0.2);
+    }
+
+    /* Section headers */
+    .r-section { display: flex; flex-direction: column; gap: 3mm; }
+    .r-label {
+      font-size: 7pt; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); font-weight: 700;
+      padding-bottom: 1.5mm; border-bottom: 1px solid var(--rule);
+    }
+
+    /* Experience */
+    .exp-list { display: flex; flex-direction: column; gap: 3.5mm; }
+    .exp-item { break-inside: avoid; }
+    .exp-header { display: flex; justify-content: space-between; align-items: baseline; gap: 4px; }
+    .exp-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 9pt; font-weight: 700;
+    }
+    .exp-period { font-size: 7pt; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+    .exp-company { font-size: 7.5pt; color: var(--accent); font-weight: 600; margin-bottom: 1mm; }
+    .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 1mm; }
+    .exp-bullets li {
+      font-size: 8pt; color: var(--muted); line-height: 1.45;
+      padding-left: 10px; position: relative;
+    }
+    .exp-bullets li::before {
+      content: '–'; position: absolute; left: 0;
+      color: var(--accent); font-weight: 700;
+    }
+    .exp-bullets li strong { color: var(--text); font-weight: 600; }
+
+    /* Education */
+    .edu-list { display: flex; flex-direction: column; gap: 2.5mm; }
+    .edu-item { break-inside: avoid; }
+    .edu-item.featured {
+      background: var(--accent-lt); border: 1px solid var(--accent-br);
+      border-radius: 4px; padding: 2.5mm 3mm;
+    }
+    .edu-degree {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 8.5pt; font-weight: 700;
+    }
+    .edu-school { font-size: 7.5pt; color: var(--accent); font-weight: 600; margin-top: 0.5mm; }
+    .edu-meta { font-size: 7pt; color: var(--muted); margin-top: 0.5mm; }
+    .edu-badge {
+      display: inline-block; margin-top: 1.5mm;
+      font-size: 6.5pt; font-weight: 700;
+      padding: 1.5px 6px; border-radius: 3px;
+      background: var(--green-lt); color: var(--green);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Print bar (screen only) -->
+<div class="print-bar no-print">
+  <span>resume-pdf.html — A4 optimized · Open in Chrome for best results</span>
+  <button class="print-btn" onclick="window.print()">
+    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"/></svg>
+    Save as PDF
+  </button>
+</div>
+
+<div class="page">
+
+  <!-- ── LEFT ── -->
+  <div class="col-left">
+
+    <div class="photo-wrap">
+      <img src="Luca astronauta.jpeg" alt="Luca Raimondo" />
+    </div>
+
+    <!-- Contact -->
+    <div class="l-section">
+      <div class="l-label">Contact</div>
+      <div class="contact-list">
+        <div class="contact-item"><span class="ci-icon">✉</span><a href="mailto:luca1994@gmail.com">luca1994@gmail.com</a></div>
+        <div class="contact-item"><span class="ci-icon">☏</span>+598 99998729</div>
+        <div class="contact-item"><span class="ci-icon">⌖</span>Montevideo, Uruguay</div>
+        <div class="contact-item"><span class="ci-icon">in</span><a href="https://www.linkedin.com/in/luca-raimondolo/">linkedin.com/in/luca-raimondolo</a></div>
+        <div class="contact-item"><span class="ci-icon">▶</span><a href="https://www.youtube.com/@lucaraimondo5">youtube/@lucaraimondo5</a></div>
+      </div>
+    </div>
+
+    <!-- Languages -->
+    <div class="l-section">
+      <div class="l-label">Languages</div>
+      <div class="lang-list">
+        <div class="lang-item"><span class="lang-name">Spanish</span><span class="lang-level">Native</span></div>
+        <div class="lang-item"><span class="lang-name">English</span><span class="lang-level">Professional</span></div>
+      </div>
+    </div>
+
+    <!-- PhD -->
+    <div class="phd-card">
+      <div class="phd-card-eyebrow">🔭 Current Research</div>
+      <div class="phd-card-title">PhD in Communication</div>
+      <p>Uses & perceptions of Artificial Intelligence among young people — Universidad Católica del Uruguay.</p>
+      <span class="phd-badge">Ongoing · 2024–Present</span>
+    </div>
+
+    <!-- Skills -->
+    <div class="l-section">
+      <div class="l-label">AI & Generative</div>
+      <div class="skill-pills">
+        <span class="s-pill">ComfyUI</span>
+        <span class="s-pill">Prompt Engineering</span>
+        <span class="s-pill">Image Generation</span>
+        <span class="s-pill">Video Generation</span>
+        <span class="s-pill">ElevenLabs</span>
+        <span class="s-pill">Local Models</span>
+      </div>
+    </div>
+
+    <div class="l-section">
+      <div class="l-label">Audio & Sound</div>
+      <div class="skill-pills">
+        <span class="s-pill">Sound Design</span>
+        <span class="s-pill">Music Composition</span>
+        <span class="s-pill">Generative Music</span>
+        <span class="s-pill">Voice AI</span>
+        <span class="s-pill">On-set Sound</span>
+      </div>
+    </div>
+
+    <div class="l-section">
+      <div class="l-label">Production</div>
+      <div class="skill-pills">
+        <span class="s-pill">Screenplay</span>
+        <span class="s-pill">Video Editing</span>
+        <span class="s-pill">Concept Direction</span>
+        <span class="s-pill">Brand Strategy</span>
+        <span class="s-pill">Community Mgmt</span>
+      </div>
+    </div>
+
+    <!-- QR -->
+    <!-- ⚠️ Replace the data= URL once the portfolio is hosted online -->
+    <div class="qr-wrap">
+      <img
+        src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&color=111118&bgcolor=ffffff&data=https://www.linkedin.com/in/luca-raimondolo/"
+        alt="Portfolio QR"
+      />
+      <div class="qr-label">
+        <strong>Online Portfolio</strong>
+        Projects, demos & more
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── RIGHT ── -->
+  <div class="col-right">
+
+    <!-- Name -->
+    <div class="name-block">
+      <h1>Luca <span>Raimondo</span></h1>
+      <div class="subtitle">AI Creative Producer · Sound Director · Researcher</div>
+      <div class="name-tags">
+        <span class="n-tag">PhD Candidate</span>
+        <span class="n-tag">AI Research</span>
+        <span class="n-tag">Generative Media</span>
+        <span class="n-tag grn">Ventana Sur Tech 2025</span>
+      </div>
+    </div>
+
+    <!-- Experience -->
+    <div class="r-section">
+      <div class="r-label">Experience</div>
+      <div class="exp-list">
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <div class="exp-title">Digital Transformation Consultant</div>
+            <div class="exp-period">2026 – Present</div>
+          </div>
+          <div class="exp-company">Green Lab Packing</div>
+          <ul class="exp-bullets">
+            <li>AI implementation strategy and process optimization for a logistics company</li>
+          </ul>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <div class="exp-title">University Lecturer</div>
+            <div class="exp-period">2025 – Present</div>
+          </div>
+          <div class="exp-company">Universidad Católica del Uruguay</div>
+          <ul class="exp-bullets">
+            <li>Course: <strong>Digital Platform Analysis</strong> — translating AI research into applied curriculum</li>
+          </ul>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <div class="exp-title">AI Creative Producer</div>
+            <div class="exp-period">2025 – Present</div>
+          </div>
+          <div class="exp-company">SideOutSticks (formerly Vapai Studio)</div>
+          <ul class="exp-bullets">
+            <li><strong>Ventana Sur Tech 2025</strong> — Official Selection, short film <em>Tink</em> (Cannes-affiliated Latin American film market)</li>
+            <li>End-to-end AI film production: screenplay, image gen, video gen, voice AI, sound design, music, editing</li>
+            <li>Generative audio systems: live radio, modular music, real-time AI streaming pipelines</li>
+            <li>ComfyUI workflow design; concept development for AI-native media formats</li>
+          </ul>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <div class="exp-title">Research Assistant</div>
+            <div class="exp-period">2024 – 2025</div>
+          </div>
+          <div class="exp-company">Wilson Center</div>
+          <ul class="exp-bullets">
+            <li>Policy-level research on AI adoption in Latin American industrial sectors</li>
+          </ul>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <div class="exp-title">Research Assistant</div>
+            <div class="exp-period">2024 – 2025</div>
+          </div>
+          <div class="exp-company">Open Technology Fund (OTF)</div>
+          <ul class="exp-bullets">
+            <li>DNS blocking research in Latin America — technical, human rights, and policy dimensions</li>
+          </ul>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <div class="exp-title">Head of Marketing</div>
+            <div class="exp-period">2023 – 2024</div>
+          </div>
+          <div class="exp-company">CodigoDelSur</div>
+          <ul class="exp-bullets">
+            <li>Strategic communication and brand positioning for the US market; email marketing, social media, content production</li>
+          </ul>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <div class="exp-title">Creative Writer</div>
+            <div class="exp-period">2022 – 2023</div>
+          </div>
+          <div class="exp-company">Grupo Magnum</div>
+          <ul class="exp-bullets">
+            <li>Strategic communication, creative writing in English, content planning, brand development</li>
+          </ul>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <div class="exp-title">Sound Director & Boom Operator</div>
+            <div class="exp-period">Film Industry</div>
+          </div>
+          <div class="exp-company">Film & Television Productions</div>
+          <ul class="exp-bullets">
+            <li><strong>Sound Director</strong> — Uruguayan feature film</li>
+            <li><strong>Boom Operator</strong> — two international <strong>Amazon Prime</strong> series + Uruguayan feature</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Education -->
+    <div class="r-section">
+      <div class="r-label">Education</div>
+      <div class="edu-list">
+
+        <div class="edu-item featured">
+          <div class="edu-degree">PhD in Communication</div>
+          <div class="edu-school">Universidad Católica del Uruguay</div>
+          <div class="edu-meta">2024 – Present · <em>Uses and perceptions of Artificial Intelligence among young people in Montevideo</em></div>
+          <span class="edu-badge">Ongoing</span>
+        </div>
+
+        <div class="edu-item">
+          <div class="edu-degree">Master in Music Composition for Audiovisual Media <span style="font-weight:400;font-size:7pt;color:var(--muted)">(incomplete)</span></div>
+          <div class="edu-school">ESMUC — Escola Superior de Música de Catalunya, Barcelona</div>
+          <div class="edu-meta">Composition and sound design for film, television, and interactive media</div>
+        </div>
+
+        <div class="edu-item">
+          <div class="edu-degree">Diploma in Internet Governance (DiGI)</div>
+          <div class="edu-school">Universidad Católica del Uruguay</div>
+          <div class="edu-meta">2024 · Digital policy, platform regulation, technology & society</div>
+        </div>
+
+        <div class="edu-item">
+          <div class="edu-degree">Bachelor's in Social Communication</div>
+          <div class="edu-school">Universidad Católica del Uruguay</div>
+          <div class="edu-meta">2013 – 2019 · Completed</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
